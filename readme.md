@@ -1,3 +1,3 @@
 # Anton jira worklog
 
-Google assistant for jira worklog
+Example of usage Dialogflow & Firebase API for Google Assistant

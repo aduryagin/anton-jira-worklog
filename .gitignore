@@ -44,10 +44,10 @@ bower_components
 build/Release
 
 # Builds
-functions/lib
+lib
 
 # Private data
-functions/firebase-keys.json
+firebase-keys.json
 
 # Dependency directories
 node_modules/
