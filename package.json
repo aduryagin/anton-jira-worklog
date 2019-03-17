@@ -1,11 +1,10 @@
 {
-  "name": "functions",
+  "name": "anton-jira-worklog",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
     "start": "FIREBASE_CONFIG={} node lib/src/index.js"
   },
-  "main": "lib/index.js",
   "dependencies": {
     "actions-on-google": "^2.6.0",
     "axios": "^0.18.0",
@@ -13,11 +12,11 @@
     "dialogflow-fulfillment": "^0.6.1",
     "express": "^4.16.4",
     "firebase-admin": "~7.0.0",
-    "firebase-functions": "^2.2.0"
+    "firebase-functions": "^2.2.0",
+    "typescript": "^3.3.3333"
   },
   "devDependencies": {
-    "tslint": "^5.12.0",
-    "typescript": "^3.2.2"
+    "tslint": "^5.12.0"
   },
   "private": true
 }
