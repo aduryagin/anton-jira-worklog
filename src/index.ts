@@ -1,20 +1,24 @@
 import { dialogflow } from 'actions-on-google';
-import { https } from 'firebase-functions'; 
 import * as admin from 'firebase-admin';
+import express from 'express';
+import bodyParser from 'body-parser';
 import Request from './core/request';
 import Jira from './core/jira';
 import { initAllIntents } from './intents';
 import { initDBCollections } from './database';
 import firebaseAccount from '../firebase-keys.json';
 
-const serviceAccount = firebaseAccount as admin.ServiceAccount;
-process.env.DEBUG = 'dialogflow:debug';
 const app = dialogflow();
+
+const expressApp = express().use(bodyParser.json());
+expressApp.post('/fulfillment', app);
 
 const main = async () => {
   // Init firestore
+  const serviceAccount = firebaseAccount as admin.ServiceAccount;
   const adminApp = admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://anton-jira-worklog.firebaseio.com"
   });
   const firestore = admin.firestore(adminApp);
 
@@ -33,8 +37,8 @@ const main = async () => {
 
 main()
   .then(() => {
-    console.log('App was successfully init');
+    expressApp.listen(3000, () => {
+      console.log('App was successfully init. Port: 3000');
+    });
   })
   .catch(e => console.error(e));
-
-https.onRequest(app);
