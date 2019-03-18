@@ -49,7 +49,7 @@ export default class UsersDBCollection extends DBCollection<User> {
     const users = await this.snapshot.where('login', '==', login).get();
     users.forEach(async (user: { id: string | undefined; }) => {
       try {
-        await this.snapshot.doc(user.id).update({ login: session });
+        await this.snapshot.doc(user.id).update({ session });
       } catch (e) {
         console.log(e);
       }
