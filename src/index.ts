@@ -11,7 +11,7 @@ import firebaseAccount from '../firebase-keys.json';
 const app = dialogflow();
 
 const expressApp = express().use(bodyParser.json());
-expressApp.post('/fulfillment', app);
+expressApp.post('/', app);
 
 const main = async () => {
   // Init firestore
