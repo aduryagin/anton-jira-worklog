@@ -92,11 +92,12 @@ export default class Task extends TaskTimer implements TaskInterface {
   async end(conv: DialogflowConversation) {
     if (!this.inProgress) return conv.close(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
 
+    const taskNumber = this.taskNumber;
     const { time, started } = this.stop();
     const currentTime = getNormalizedTime(time);
 
-    await this.jira.workLog(this.type, this.taskNumber, started, time);
+    await this.jira.workLog(this.type, taskNumber, started, time);
 
-    return conv.close(`${this.formatName(this.name, this.taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
+    return conv.close(`${this.formatName(this.name, taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
   }
 }
