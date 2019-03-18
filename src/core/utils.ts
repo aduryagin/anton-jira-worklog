@@ -34,6 +34,26 @@ export function getNormalizedTime(seconds: number): string {
   return formattedTime;
 };
 
+export function declensionGenitive(type: string) {
+  if (type === 'ревью') {
+    return 'ревью';
+  }
+
+  if (type === 'стендап') {
+    return 'стендапа';
+  }
+
+  if (type === 'разработка') {
+    return 'разработки';
+  }
+
+  if (type === 'встреча') {
+    return 'встречи';
+  }
+
+  return 'ревью';
+}
+
 export function declensionContinuePast(type: string) {
   if (type === 'ревью') {
     return 'длилось';

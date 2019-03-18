@@ -1,6 +1,6 @@
 import TaskTimer, { TaskTimerInterface } from "./taskTimer";
 import { DialogflowApp, DialogflowConversation } from "actions-on-google";
-import { getNormalizedTime } from "./utils";
+import { getNormalizedTime, declensionGenitive } from "./utils";
 import GlobalIntents from "../intents/globalIntents";
 import JiraDBCollection from "../database/jiraDBCollection";
 import Jira from "./jira";
@@ -70,7 +70,9 @@ export default class Task extends TaskTimer implements TaskInterface {
     if (this.inProgress) return conv.close(`${this.formatName(this.name, this.taskNumber)} уже идет`);
     this.taskNumber = params['task-number'];
 
-    return this.start();
+    this.start();
+
+    return conv.close(`Поставил таймер для ${declensionGenitive(this.name)}`);
   }
 
   cancel(conv: DialogflowConversation) {
