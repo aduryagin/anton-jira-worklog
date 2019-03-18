@@ -1,6 +1,6 @@
 import TaskTimer, { TaskTimerInterface } from "./taskTimer";
 import { DialogflowApp, DialogflowConversation } from "actions-on-google";
-import { getNormalizedTime, declensionGenitive } from "./utils";
+import { getNormalizedTime, declensionGenitive, declensionContinuePast } from "./utils";
 import GlobalIntents from "../intents/globalIntents";
 import JiraDBCollection from "../database/jiraDBCollection";
 import Jira from "./jira";
@@ -97,6 +97,6 @@ export default class Task extends TaskTimer implements TaskInterface {
 
     await this.jira.workLog(this.type, this.taskNumber, started, time);
 
-    return conv.close(`${this.formatName(this.name, this.taskNumber)} длился ${currentTime}`);
+    return conv.close(`${this.formatName(this.name, this.taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
   }
 }
