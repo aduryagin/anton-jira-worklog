@@ -1,4 +1,3 @@
-import { DialogflowApp } from "actions-on-google";
 import GlobalIntents from "./globalIntents";
 import Jira from "../core/jira";
 import JiraDBCollection from "../database/jiraDBCollection";
@@ -7,21 +6,25 @@ import Review from './review';
 import Development from './development';
 import Meeting from './meeting';
 
-export const initAllIntents = (app: DialogflowApp<any, any, any, any>, jiraDBCollection: JiraDBCollection, jira: Jira) => {
+export const initAllIntents = (jiraDBCollection: JiraDBCollection, jira: Jira): Map<string, any> => {
+  const intentMap = new Map();
+
   // Global intents
-  const globalIntents = new GlobalIntents(app);
+  const globalIntents = new GlobalIntents(intentMap);
   globalIntents.initIntents();
 
   // Task intents  
-  const standUp = new StandUp(app, globalIntents, jiraDBCollection, jira);
+  const standUp = new StandUp(intentMap, globalIntents, jiraDBCollection, jira);
   globalIntents.push(standUp);
 
-  const review = new Review(app, globalIntents, jiraDBCollection, jira);
+  const review = new Review(intentMap, globalIntents, jiraDBCollection, jira);
   globalIntents.push(review);
 
-  const development = new Development(app, globalIntents, jiraDBCollection, jira);
+  const development = new Development(intentMap, globalIntents, jiraDBCollection, jira);
   globalIntents.push(development);
 
-  const meeting = new Meeting(app, globalIntents, jiraDBCollection, jira);
+  const meeting = new Meeting(intentMap, globalIntents, jiraDBCollection, jira);
   globalIntents.push(meeting);
+
+  return intentMap;
 };

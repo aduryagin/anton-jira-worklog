@@ -1,5 +1,4 @@
 import Task from '../core/task';
-import { DialogflowConversation } from 'actions-on-google';
 
 const STANDUP_NAME = 'стендап';
 const TYPE = 'STANDUP';
@@ -9,10 +8,10 @@ class StandUp extends Task {
   type: string = TYPE;
 
   initIntents() {
-    this.app.intent('Stand-up', (conv: DialogflowConversation, params: { 'task-number': any }) => this.takeInProgress(conv, params) );
-    this.app.intent('Stand-up cancel', (conv: DialogflowConversation) => this.cancel(conv));
-    this.app.intent('How long is the stand-up', (conv: DialogflowConversation) => this.howLong(conv));
-    this.app.intent('Stand-up ends', (conv: DialogflowConversation) => this.end(conv));
+    this.intentMap.set('Stand-up', (agent: any) => this.takeInProgress(agent) );
+    this.intentMap.set('Stand-up cancel', (agent: any) => this.cancel(agent));
+    this.intentMap.set('How long is the stand-up', (agent: any) => this.howLong(agent));
+    this.intentMap.set('Stand-up ends', (agent: any) => this.end(agent));
   }
 }
 

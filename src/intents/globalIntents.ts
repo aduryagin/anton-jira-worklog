@@ -1,13 +1,12 @@
-import { DialogflowApp, DialogflowConversation } from "actions-on-google";
 import Task from "../core/task";
 import { getNormalizedTime } from "../core/utils";
 
 export default class GlobalIntents {
-  app: DialogflowApp<any, any, any, any>; 
+  intentMap: Map<string, any>; 
   intents: Array<Task> = [];
 
-  constructor(app: DialogflowApp<any, any, any, any>) {
-    this.app = app;
+  constructor(intentMap: Map<string, any>) {
+    this.intentMap = intentMap;
   }
 
   checkThatSomeIntentInProgress(excludeIntent?: Task) {
@@ -38,14 +37,14 @@ export default class GlobalIntents {
   }
 
   initIntents() {
-    this.app.intent(`What's in progress`, (conv: DialogflowConversation): any => {
+    this.intentMap.set(`What's in progress`, (agent: any): any => {
       const somethingInProgress = this.whatsInProgress();
 
       if (somethingInProgress) {
-        return conv.ask(somethingInProgress);
+        return agent.add(somethingInProgress);
       }
 
-      return conv.ask('Вы ничего не делаете');
+      return agent.add('Вы ничего не делаете');
     });
   }
 }

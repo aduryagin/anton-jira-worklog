@@ -1,5 +1,4 @@
 import TaskTimer, { TaskTimerInterface } from "./taskTimer";
-import { DialogflowApp, DialogflowConversation } from "actions-on-google";
 import { getNormalizedTime, declensionGenitive, declensionContinuePast } from "./utils";
 import GlobalIntents from "../intents/globalIntents";
 import JiraDBCollection from "../database/jiraDBCollection";
@@ -7,22 +6,22 @@ import Jira from "./jira";
 
 export interface TaskInterface extends TaskTimerInterface {
   inProgress: boolean;
-  app: DialogflowApp<any, any, any, any>;
+  intentMap: Map<string, any>;
   name: string;
   type: string;
   taskNumber: any;
   initIntents?: Function;
   formatName: (name: string, taskNumber: any) => string;
-  takeInProgress: (conv: DialogflowConversation, params: { 'task-number': any }) => any;
-  cancel: (conv: DialogflowConversation) => any;
-  howLong: (conv: DialogflowConversation) => any;
-  end: (conv: DialogflowConversation) => any;
+  takeInProgress: (agent: any) => any;
+  cancel: (agent: any) => any;
+  howLong: (agent: any) => any;
+  end: (agent: any) => any;
 }
 
 export default class Task extends TaskTimer implements TaskInterface {
   [x: string]: any;
   inProgress: boolean = false;
-  app: DialogflowApp<any, any, any, any>;
+  intentMap: Map<string, any>;
   jiraDBCollection: JiraDBCollection;
   name: string = '';
   type: string = '';
@@ -30,10 +29,10 @@ export default class Task extends TaskTimer implements TaskInterface {
   taskNumber: any = '';
   globalIntents: GlobalIntents;
 
-  constructor(app: DialogflowApp<any, any, any, any>, globalIntents: GlobalIntents, jiraDBCollection: JiraDBCollection, jira: Jira) {
+  constructor(intentMap: Map<string, any>, globalIntents: GlobalIntents, jiraDBCollection: JiraDBCollection, jira: Jira) {
     super();
 
-    this.app = app;
+    this.intentMap = intentMap;
     globalIntents.push(this);
     this.globalIntents = globalIntents;
     this.jiraDBCollection = jiraDBCollection;
@@ -65,32 +64,32 @@ export default class Task extends TaskTimer implements TaskInterface {
 
   // chat actions
 
-  takeInProgress(conv: DialogflowConversation, params: { 'task-number': any }) {
-    if (this.globalIntents.checkThatSomeIntentInProgress(this)) return conv.ask(this.globalIntents.whatsInProgress());
-    if (this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} уже идет`);
-    this.taskNumber = params['task-number'];
+  takeInProgress(agent: any) {
+    if (this.globalIntents.checkThatSomeIntentInProgress(this)) return agent.add(this.globalIntents.whatsInProgress());
+    if (this.inProgress) return agent.add(`${this.formatName(this.name, this.taskNumber)} уже идет`);
+    this.taskNumber = agent.parameters['task-number'];
 
     this.start();
 
-    return conv.ask(`Поставил таймер для ${declensionGenitive(this.name)}`);
+    return agent.add(`Поставил таймер для ${declensionGenitive(this.name)}`);
   }
 
-  cancel(conv: DialogflowConversation) {
-    if (!this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
+  cancel(agent: any) {
+    if (!this.inProgress) return agent.add(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
     this.stop();
 
-    return conv.ask(`Отменил ${this.formatName(this.name, this.taskNumber)}`);
+    return agent.add(`Отменил ${this.formatName(this.name, this.taskNumber)}`);
   }
 
-  howLong(conv: DialogflowConversation) {
-    if (!this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
+  howLong(agent: any) {
+    if (!this.inProgress) return agent.add(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
 
     const currentTime = getNormalizedTime(this.time());
-    return conv.ask(`${this.formatName(this.name, this.taskNumber)} длится ${currentTime}`);
+    return agent.add(`${this.formatName(this.name, this.taskNumber)} длится ${currentTime}`);
   }
 
-  async end(conv: DialogflowConversation) {
-    if (!this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
+  async end(agent: any) {
+    if (!this.inProgress) return agent.add(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
 
     const taskNumber = this.taskNumber;
     const { time, started } = this.stop();
@@ -98,6 +97,6 @@ export default class Task extends TaskTimer implements TaskInterface {
 
     await this.jira.workLog(this.type, taskNumber, started, time);
 
-    return conv.ask(`${this.formatName(this.name, taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
+    return agent.add(`${this.formatName(this.name, taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
   }
 }

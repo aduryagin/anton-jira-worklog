@@ -1,4 +1,4 @@
-import { dialogflow } from 'actions-on-google';
+import { WebhookClient } from 'dialogflow-fulfillment';
 import * as admin from 'firebase-admin';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -8,10 +8,7 @@ import { initAllIntents } from './intents';
 import { initDBCollections } from './database';
 import firebaseAccount from '../firebase-keys.json';
 
-const app = dialogflow();
-
 const expressApp = express().use(bodyParser.json());
-expressApp.post('/', app);
 
 const main = async () => {
   // Init firestore
@@ -32,11 +29,16 @@ const main = async () => {
   const jira = new Jira(request, jiraDBCollection, tasksDBCollection);
 
   // Intents
-  initAllIntents(app, jiraDBCollection, jira);
+  return initAllIntents(jiraDBCollection, jira);
 };
 
 main()
-  .then(() => {
+  .then((intentMap) => {
+    expressApp.post('/', (request, response) => {
+      const app = WebhookClient({ request, response });
+      app.handleRequest(intentMap);
+    });
+
     expressApp.listen(3000, () => {
       console.log('App was successfully init. Port: 3000');
     });

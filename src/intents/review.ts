@@ -1,5 +1,4 @@
 import Task from '../core/task';
-import { DialogflowConversation } from 'actions-on-google';
 
 const REVIEW_NAME = 'ревью';
 const TYPE = 'REVIEW';
@@ -9,10 +8,10 @@ class Review extends Task {
   type: string = TYPE;
 
   initIntents() {
-    this.app.intent('Review', (conv: DialogflowConversation, params: { 'task-number': any }) => this.takeInProgress(conv, params));
-    this.app.intent('Review cancel', (conv: DialogflowConversation) => this.cancel(conv));
-    this.app.intent('How long is the review', (conv: DialogflowConversation) => this.howLong(conv));
-    this.app.intent('Review ends', (conv: DialogflowConversation) => this.end(conv));
+    this.intentMap.set('Review', (agent: any) => this.takeInProgress(agent));
+    this.intentMap.set('Review cancel', (agent: any) => this.cancel(agent));
+    this.intentMap.set('How long is the review', (agent: any) => this.howLong(agent));
+    this.intentMap.set('Review ends', (agent: any) => this.end(agent));
   }
 }
 

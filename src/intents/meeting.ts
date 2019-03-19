@@ -1,5 +1,4 @@
 import Task from '../core/task';
-import { DialogflowConversation } from 'actions-on-google';
 
 const MEETING_NAME = 'встреча';
 const TYPE = 'MEETING';
@@ -9,10 +8,10 @@ class Meeting extends Task {
   type: string = TYPE;
 
   initIntents() {
-    this.app.intent('Meeting', (conv: DialogflowConversation, params: { 'task-number': any }) => this.takeInProgress(conv, params));
-    this.app.intent('Meeting cancel', (conv: DialogflowConversation) => this.cancel(conv));
-    this.app.intent('How long is the meeting', (conv: DialogflowConversation) => this.howLong(conv));
-    this.app.intent('Meeting ends', (conv: DialogflowConversation) => this.end(conv));
+    this.intentMap.set('Meeting', (agent: any) => this.takeInProgress(agent));
+    this.intentMap.set('Meeting cancel', (agent: any) => this.cancel(agent));
+    this.intentMap.set('How long is the meeting', (agent: any) => this.howLong(agent));
+    this.intentMap.set('Meeting ends', (agent: any) => this.end(agent));
   }
 }
 
