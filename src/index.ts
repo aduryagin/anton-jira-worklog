@@ -35,7 +35,7 @@ const main = async () => {
 main()
   .then((intentMap) => {
     expressApp.post('/', (request, response) => {
-      const app = WebhookClient({ request, response });
+      const app = new WebhookClient({ request, response });
       app.handleRequest(intentMap);
     });
 
