@@ -66,31 +66,31 @@ export default class Task extends TaskTimer implements TaskInterface {
   // chat actions
 
   takeInProgress(conv: DialogflowConversation, params: { 'task-number': any }) {
-    if (this.globalIntents.checkThatSomeIntentInProgress(this)) return conv.close(this.globalIntents.whatsInProgress());
-    if (this.inProgress) return conv.close(`${this.formatName(this.name, this.taskNumber)} уже идет`);
+    if (this.globalIntents.checkThatSomeIntentInProgress(this)) return conv.ask(this.globalIntents.whatsInProgress());
+    if (this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} уже идет`);
     this.taskNumber = params['task-number'];
 
     this.start();
 
-    return conv.close(`Поставил таймер для ${declensionGenitive(this.name)}`);
+    return conv.ask(`Поставил таймер для ${declensionGenitive(this.name)}`);
   }
 
   cancel(conv: DialogflowConversation) {
-    if (!this.inProgress) return conv.close(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
+    if (!this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
     this.stop();
 
-    return conv.close(`Отменил ${this.formatName(this.name, this.taskNumber)}`);
+    return conv.ask(`Отменил ${this.formatName(this.name, this.taskNumber)}`);
   }
 
   howLong(conv: DialogflowConversation) {
-    if (!this.inProgress) return conv.close(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
+    if (!this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
 
     const currentTime = getNormalizedTime(this.time());
-    return conv.close(`${this.formatName(this.name, this.taskNumber)} длится ${currentTime}`);
+    return conv.ask(`${this.formatName(this.name, this.taskNumber)} длится ${currentTime}`);
   }
 
   async end(conv: DialogflowConversation) {
-    if (!this.inProgress) return conv.close(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
+    if (!this.inProgress) return conv.ask(`${this.formatName(this.name, this.taskNumber)} еще не идет`);
 
     const taskNumber = this.taskNumber;
     const { time, started } = this.stop();
@@ -98,6 +98,6 @@ export default class Task extends TaskTimer implements TaskInterface {
 
     await this.jira.workLog(this.type, taskNumber, started, time);
 
-    return conv.close(`${this.formatName(this.name, taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
+    return conv.ask(`${this.formatName(this.name, taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
   }
 }

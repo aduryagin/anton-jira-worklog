@@ -42,10 +42,10 @@ export default class GlobalIntents {
       const somethingInProgress = this.whatsInProgress();
 
       if (somethingInProgress) {
-        return conv.close(somethingInProgress);
+        return conv.ask(somethingInProgress);
       }
 
-      return conv.close('Вы ничего не делаете');
+      return conv.ask('Вы ничего не делаете');
     });
   }
 }
