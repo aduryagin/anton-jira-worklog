@@ -7,15 +7,28 @@ const TYPE = 'DEV';
 class Development extends Task {
   name: string = DEVELOPMENT_NAME;
   type: string = TYPE;
+  currentTaskNumber: string = '';
 
   debouncedSendWorkLog = debounce((agent: any) => {
+    // tslint:disable-next-line: no-floating-promises
     this.end(agent);
   }, 1000 * 60 * 5);
 
   sendDevelopmentWorkLog(agent: any) {
-    if (!this.inProgress) this.start();
+    if (!this.inProgress) {
+      this.currentTaskNumber = agent.parameters['task-number'];
+      this.start();
+    }
+
+    if (this.inProgress && this.currentTaskNumber !== agent.parameters['task-number']) {
+      this.currentTaskNumber = agent.parameters['task-number'];
+      // tslint:disable-next-line: no-floating-promises
+      this.end(agent);
+      this.start();
+    }
 
     this.debouncedSendWorkLog(agent);
+
     return agent.add('Ок');
   }
 
