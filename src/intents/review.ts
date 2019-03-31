@@ -12,6 +12,7 @@ class Review extends Task {
     this.intentMap.set('Review cancel', (agent: any) => this.cancel(agent));
     this.intentMap.set('How long is the review', (agent: any) => this.howLong(agent));
     this.intentMap.set('Review ends', (agent: any) => this.end(agent));
+    this.intentMap.set('Review in progress', (agent: any) => this.sendInProgressWorkLog(agent));
   }
 }
 

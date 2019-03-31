@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce';
 import TaskTimer, { TaskTimerInterface } from "./taskTimer";
 import { getNormalizedTime, declensionGenitive, declensionContinuePast } from "./utils";
 import GlobalIntents from "../intents/globalIntents";
@@ -63,6 +64,28 @@ export default class Task extends TaskTimer implements TaskInterface {
   }
 
   // chat actions
+
+  debouncedSendWorkLog = debounce((agent: any) => {
+    // tslint:disable-next-line: no-floating-promises
+    this.end(agent);
+  }, 1000 * 60 * 5);
+
+  async sendInProgressWorkLog(agent: any) {
+    if (!this.inProgress) {
+      this.taskNumber = agent.parameters['task-number'];
+      this.start();
+    }
+
+    if (this.inProgress && this.taskNumber !== agent.parameters['task-number']) {
+      this.taskNumber = agent.parameters['task-number'];
+      await this.end(agent);
+      this.start();
+    }
+
+    this.debouncedSendWorkLog(agent);
+
+    return agent.add('Ок');
+  }
 
   takeInProgress(agent: any) {
     if (this.globalIntents.checkThatSomeIntentInProgress(this)) return agent.add(this.globalIntents.whatsInProgress());
