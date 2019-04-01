@@ -6,6 +6,7 @@
     "start": "FIREBASE_CONFIG={} node lib/src/index.js"
   },
   "dependencies": {
+    "@types/cron": "^1.7.0",
     "actions-on-google": "^2.6.0",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
@@ -18,7 +19,6 @@
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
-    "@types/cron": "^1.7.0",
     "tslint": "^5.12.0"
   },
   "private": true
