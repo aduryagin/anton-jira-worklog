@@ -17,12 +17,12 @@ class Cron {
   }
 
   start() {
-    new CronJob('0 18 * * 1-5 *', async () => {
+    new CronJob('0 0 18 * * 1-5', async () => {
       await this.addSomeWorkLogInEndOfDay();
       // tslint:disable-next-line: no-empty
     }, () => {}, true, 'Europe/Moscow');
 
-    new CronJob('0 12 * * 1-5 *', async () => {
+    new CronJob('0 0 12 * * 1-5', async () => {
       await this.addSomeStandUp();
       // tslint:disable-next-line: no-empty
     }, () => {}, true, 'Europe/Moscow');
