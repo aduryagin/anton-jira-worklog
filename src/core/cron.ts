@@ -41,7 +41,7 @@ class Cron {
     const data = await this.request.instance.post(`/rest/api/2/issue/${task.project}-${task.number}/worklog`, {
       ...(task.comment ? { comment: task.comment } : {}),
       started: new Date(standupDate.getTime()).toISOString().replace('Z', '+0000'),
-      timeSpentSeconds: Number(40 * 60).toString(),
+      timeSpentSeconds: Number(60 * 60).toString(),
     });
 
     return data;
@@ -82,7 +82,7 @@ class Cron {
         return accumulator + worklog.timeSpentSeconds; 
       }
 
-      return 0;
+      return accumulator;
     }, 0);
 
     return seconds;
