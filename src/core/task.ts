@@ -68,7 +68,7 @@ export default class Task extends TaskTimer implements TaskInterface {
   debouncedSendWorkLog = debounce((agent: any) => {
     // tslint:disable-next-line: no-floating-promises
     this.end(agent);
-  }, 1000 * 60 * 5);
+  }, 1000 * 60 * 15);
 
   async sendInProgressWorkLog(agent: any) {
     if (!this.inProgress) {
