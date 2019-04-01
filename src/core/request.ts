@@ -23,6 +23,7 @@ class Request {
         return this.instance.request(error.config);
       }
 
+      console.error(error.response);
       return Promise.reject(error);
     });
   }

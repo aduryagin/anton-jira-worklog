@@ -7,6 +7,7 @@ import Jira from './core/jira';
 import { initAllIntents } from './intents';
 import { initDBCollections } from './database';
 import firebaseAccount from '../firebase-keys.json';
+import Cron from './core/cron';
 
 const expressApp = express().use(bodyParser.json());
 
@@ -27,6 +28,9 @@ const main = async () => {
 
   // Jira API
   const jira = new Jira(request, jiraDBCollection, tasksDBCollection);
+
+  // Cron
+  new Cron(request, usersDBCollection, tasksDBCollection);
 
   // Intents
   return initAllIntents(jiraDBCollection, jira);
