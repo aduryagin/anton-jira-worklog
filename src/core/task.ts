@@ -116,10 +116,13 @@ export default class Task extends TaskTimer implements TaskInterface {
 
     const taskNumber = this.taskNumber;
     const { time, started } = this.stop();
-    const currentTime = getNormalizedTime(time);
 
-    await this.jira.workLog(this.type, taskNumber, started, time);
-
-    return agent.add(`${this.formatName(this.name, taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
+    if (taskNumber) {
+      const currentTime = getNormalizedTime(time);
+  
+      await this.jira.workLog(this.type, taskNumber, started, time);
+  
+      return agent.add(`${this.formatName(this.name, taskNumber)} ${declensionContinuePast(this.name)} ${currentTime}`);
+    }
   }
 }
