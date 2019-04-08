@@ -46,9 +46,6 @@ build/Release
 # Builds
 lib
 
-# Private data
-firebase-keys.json
-
 # Dependency directories
 node_modules/
 
