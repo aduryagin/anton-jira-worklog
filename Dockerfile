@@ -4,4 +4,4 @@ COPY package*.json ./
 RUN npm ci --production
 COPY . /app
 RUN npm run build
-EXPOSE 3000
+RUN npm run start

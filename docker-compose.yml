@@ -1,8 +1,0 @@
-version: "3"
-
-services:
-  node:
-    image: anton-jira-worklog:latest
-    command: ["npm", "start"]
-    ports: 
-      - "3000:3000"

@@ -43,8 +43,9 @@ main()
       app.handleRequest(intentMap);
     });
 
-    expressApp.listen(3000, () => {
-      console.log('App was successfully init. Port: 3000');
+    const port = process.env.PORT || 4000;
+    expressApp.listen(port, () => {
+      console.log(`App was successfully init. Port: ${port}`);
     });
   })
   .catch(e => console.error(e));
