@@ -109,7 +109,7 @@ class Cron {
       const data = await this.request.instance.post(`/rest/api/2/issue/${task.project}-${task.number}/worklog`, {
         ...(task.comment ? { comment: task.comment } : {}),
         started: new Date(eveningDate.getTime()).toISOString().replace('Z', '+0000'),
-        timeSpentSeconds: restSeconds.toString(),
+        timeSpentSeconds: restSeconds < 60 ? '60' : restSeconds.toString(),
       });
   
       return data;
