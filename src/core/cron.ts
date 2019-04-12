@@ -77,8 +77,15 @@ class Cron {
       ids
     });
 
-    const seconds = data.reduce((accumulator: number, worklog: { author: { name: string; }; timeSpentSeconds: number; }) => {
-      if (worklog.author.name === this.users.data[0].login) {
+    const seconds = data.reduce((accumulator: number, worklog: { started: string, author: { name: string; }; timeSpentSeconds: number; }) => {
+      const today = new Date();
+      const worklogDay = new Date(worklog.started);
+      const currentMonth = today.getMonth();
+      const currentDate = today.getDate();
+      const worklogMonth = worklogDay.getMonth();
+      const worklogDate = worklogDay.getDate();
+
+      if (worklog.author.name === this.users.data[0].login && currentMonth === worklogMonth && currentDate === worklogDate) {
         return accumulator + worklog.timeSpentSeconds; 
       }
 
@@ -98,13 +105,15 @@ class Cron {
     eveningDate.setSeconds(0);
     eveningDate.setMilliseconds(0);
 
-    const data = await this.request.instance.post(`/rest/api/2/issue/${task.project}-${task.number}/worklog`, {
-      ...(task.comment ? { comment: task.comment } : {}),
-      started: new Date(eveningDate.getTime()).toISOString().replace('Z', '+0000'),
-      timeSpentSeconds: restSeconds.toString(),
-    });
-
-    return data;
+    if (restSeconds > 0) {
+      const data = await this.request.instance.post(`/rest/api/2/issue/${task.project}-${task.number}/worklog`, {
+        ...(task.comment ? { comment: task.comment } : {}),
+        started: new Date(eveningDate.getTime()).toISOString().replace('Z', '+0000'),
+        timeSpentSeconds: restSeconds.toString(),
+      });
+  
+      return data;
+    }
   }
 }
 
