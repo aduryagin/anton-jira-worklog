@@ -16,7 +16,10 @@ export default class Jira {
   async workLog(taskType: string, taskNumber: string, started: number, seconds: number) {
     try {
       const task = await this.tasksDBCollection.byType(taskType);
-      const spentSeconds = seconds < 60 ? 60 : seconds;
+      let spentSeconds = seconds < 60 ? 60 : seconds;
+      // magic for review plugin
+      spentSeconds = taskType === 'REVIEW' && spentSeconds > 1800 ? 1800 : spentSeconds;
+
       const taskWorkLogNumber = taskNumber || task.number;
 
       const data = await this.request.instance.post(`/rest/api/2/issue/${task.project}-${taskWorkLogNumber}/worklog`, {
